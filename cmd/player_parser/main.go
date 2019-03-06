@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/driquet/gopubg/models/player"
+	"github.com/dvilchansky/gopubg/models/player"
 	"github.com/sirupsen/logrus"
 )
 

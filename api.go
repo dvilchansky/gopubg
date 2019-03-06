@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/driquet/gopubg/models/match"
-	"github.com/driquet/gopubg/models/player"
+	"github.com/dvilchansky/gopubg/models/match"
+	"github.com/dvilchansky/gopubg/models/player"
 )
 
 //API struct for holding the key
@@ -22,7 +22,7 @@ func NewAPI(key string) *API {
 
 //RequestStatus A function that prints out the current status of the API Key
 func (a *API) RequestStatus() error {
-	endpointURL := "https://api.playbattlegrounds.com/status"
+	endpointURL := "https://api.pubg.com/status"
 
 	buffer, err := httpRequest(endpointURL, a.Key)
 	if err != nil {
@@ -40,7 +40,7 @@ func (a *API) RequestSinglePlayerByName(shard, playerName string) (*player.Playe
 		"filter[playerNames]": {playerName},
 	}
 
-	endpointURL := fmt.Sprintf("https://api.playbattlegrounds.com/shards/%s/players?%s", shard, parameters.Encode())
+	endpointURL := fmt.Sprintf("https://api.pubg.com/shards/%s/players?%s", shard, parameters.Encode())
 
 	buffer, err := httpRequest(endpointURL, a.Key)
 	if err != nil {
@@ -56,7 +56,7 @@ func (a *API) RequestSinglePlayerByName(shard, playerName string) (*player.Playe
 //RequestMatch given a shard and a match_id string will print either match info, or a error
 func (a *API) RequestMatch(shard, matchID string) (*match.Match, error) {
 
-	endpointURL := fmt.Sprintf("https://api.playbattlegrounds.com/shards/%s/matches/%s", shard, matchID)
+	endpointURL := fmt.Sprintf("https://api.pubg.com/shards/%s/matches/%s", shard, matchID)
 	buffer, err := httpRequest(endpointURL, a.Key)
 	if err != nil {
 		return nil, err

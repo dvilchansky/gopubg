@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/driquet/gopubg"
+	"github.com/dvilchansky/gopubg"
 	"github.com/sirupsen/logrus"
 )
 
