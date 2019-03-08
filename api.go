@@ -2,10 +2,9 @@ package gopubg
 
 import (
 	"fmt"
-	"net/url"
-
 	"github.com/dvilchansky/gopubg/models/match"
 	"github.com/dvilchansky/gopubg/models/player"
+	"net/url"
 )
 
 //API struct for holding the key
@@ -35,7 +34,7 @@ func (a *API) RequestStatus() error {
 }
 
 //RequestSinglePlayerByName A function that takes a shard string, and a player name, and returns either that players data, or an error
-func (a *API) RequestSinglePlayerByName(shard, playerName string) (*player.Player, error) {
+func (a *API) RequestSinglePlayerByName(shard, playerName string) ([]*player.Player, error) {
 	parameters := url.Values{
 		"filter[playerNames]": {playerName},
 	}
@@ -46,11 +45,12 @@ func (a *API) RequestSinglePlayerByName(shard, playerName string) (*player.Playe
 	if err != nil {
 		return nil, err
 	}
+	players, err := player.ParsePlayers(buffer)
+	if err != nil {
+		panic(err.Error())
+	}
 
-	fmt.Printf("data:\n%s\n", buffer)
-
-	// TODO parse player
-	return nil, nil
+	return players, nil
 }
 
 //RequestMatch given a shard and a match_id string will print either match info, or a error
