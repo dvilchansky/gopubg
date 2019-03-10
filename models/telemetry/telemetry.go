@@ -76,6 +76,19 @@ var KnownEventTypes = []string{
 	"LogGameStatePeriodic",
 	"LogCarePackageSpawn",
 	"LogCarePackageLand",
+	"LogVaultStart",
+	"LogSwimStart",
+	"LogParachuteLanding",
+	"LogPlayerMakeGroggy",
+	"LogWeaponFireCount",
+	"LogArmorDestroy",
+	"LogItemPickupFromLootBox",
+	"LogHeal",
+	"LogObjectDestroy",
+	"LogPlayerRevive",
+	"LogSwimEnd",
+	"LogWheelDestroy",
+	"LogRedZoneEnded",
 }
 
 // UnmarshalJSON verifies the type of a telemetry event is known
@@ -209,7 +222,7 @@ var knownDamageTypes = []string{
 	"Damage_Molotov",
 	"Damage_VehicleCrashHit",
 	"Damage_VehicleHit",
-	"",
+	"Damage_Punch",
 }
 
 // UnmarshalJSON verifies the type of a subcategory
@@ -250,6 +263,7 @@ var knownDamageReasons = []string{
 	"TorsoShot",
 	"NonSpecific",
 	"None",
+	"",
 }
 
 // UnmarshalJSON verifies the type of a subcategory
@@ -423,17 +437,14 @@ func (t *Telemetry) getPlayer(name, accountID string) *Player {
 	if _, ok := t.Players[accountID]; !ok {
 		t.Players[accountID] = newPlayer(name, accountID)
 	}
-
 	return t.Players[accountID]
 }
 
 func (t *Telemetry) addPlayerEvent(te *TelemetryEvent, character *TelemetryCharacter, matchStarted bool) {
-	if character.Name == "" {
+	if character == nil || character.Name == "" {
 		return
 	}
-
 	player := t.getPlayer(character.Name, character.AccountID)
-
 	if matchStarted {
 		player.Events = append(player.Events, te)
 		player.Locations = append(player.Locations, character.Location)
@@ -491,6 +502,12 @@ func (t *Telemetry) ProcessLogPlayerAttack(te *TelemetryEvent) {
 	t.addPlayerEvent(te, te.Attacker, t.MatchStarted)
 }
 
+// ProcessLogPlayerAttack deals with event of type PlayerAttack
+func (t *Telemetry) ProcessLogPlayerKill(te *TelemetryEvent) {
+	t.addPlayerEvent(te, te.Killer, t.MatchStarted)
+	t.addPlayerEvent(te, te.Victim, t.MatchStarted)
+}
+
 // ProcessLogPlayerTakeDamage deals with event of type PlayerTakeDamage
 func (t *Telemetry) ProcessLogPlayerTakeDamage(te *TelemetryEvent) {
 	t.addPlayerEvent(te, te.Attacker, t.MatchStarted)
@@ -505,7 +522,6 @@ func (t *Telemetry) ProcessLogVehicleDestroy(te *TelemetryEvent) {
 // ParseTelemetry parses a json response containing telemetry information
 func ParseTelemetry(in io.Reader) (*Telemetry, error) {
 	t := newTelemetry()
-
 	data, err := ioutil.ReadAll(in)
 	if err != nil {
 		return nil, err

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dvilchansky/gopubg/models/match"
 	"github.com/dvilchansky/gopubg/models/player"
+	"github.com/dvilchansky/gopubg/models/telemetry"
 	"net/url"
 )
 
@@ -62,4 +63,18 @@ func (a *API) RequestMatch(shard, matchID string) (*match.Match, error) {
 	m, err := match.ParseMatch(buffer)
 
 	return m, nil
+}
+
+//RequestMatch given a shard and a match_id string will print either match info, or a error
+func (a *API) RequestTelemetry(endpointURL string) (*telemetry.Telemetry, error) {
+	buffer, err := httpRequest(endpointURL, a.Key)
+	if err != nil {
+		return nil, err
+	}
+	t, err := telemetry.ParseTelemetry(buffer)
+	if err != nil {
+		return nil, err
+	}
+
+	return t, nil
 }

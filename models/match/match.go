@@ -17,6 +17,15 @@ type Match struct {
 	TitleID      string    `jsonapi:"attr,titleId"`
 	MapName      string    `jsonapi:"attr,mapName"`
 	Rosters      []*Roster `jsonapi:"relation,rosters"`
+	Assets       []*Assets `jsonapi:"relation,assets"`
+}
+
+type Assets struct {
+	ID          string    `jsonapi:"primary,asset"`
+	CreatedAt   time.Time `jsonapi:"attr,createdAt,iso8601"`
+	URL         string    `jsonapi:"attr,URL"`
+	Name        string    `jsonapi:"attr,name"`
+	Description string    `jsonapi:"attr,description"`
 }
 
 // ParseMatch parses a json response containing matches information
