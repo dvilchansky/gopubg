@@ -33,7 +33,6 @@ func ParseMatch(in io.Reader) (*Match, error) {
 	match := new(Match)
 	err := jsonapi.UnmarshalPayload(in, match)
 	if err != nil {
-		panic(err.Error())
 		return nil, err
 	}
 

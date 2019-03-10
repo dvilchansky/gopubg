@@ -49,6 +49,19 @@ const (
 	GameStatePeriodic
 	CarePackageSpawn
 	CarePackageLand
+	VaultStart
+	SwimStart
+	ParachuteLanding
+	PlayerMakeGroggy
+	WeaponFireCount
+	ArmorDestroy
+	ItemPickupFromLootBox
+	Heal
+	ObjectDestroy
+	PlayerRevive
+	SwimEnd
+	WheelDestroy
+	RedZoneEnded
 )
 
 // KnownEventTypes represents supported types
