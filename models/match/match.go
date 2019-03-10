@@ -1,12 +1,9 @@
 package match
 
 import (
-	"errors"
-	"io"
-	"reflect"
-	"time"
-
 	"github.com/slemgrim/jsonapi"
+	"io"
+	"time"
 )
 
 // Match structure represent data related to a PUBG match
@@ -18,24 +15,18 @@ type Match struct {
 	PatchVersion string    `jsonapi:"attr,patchVersion"`
 	ShardID      string    `jsonapi:"attr,shardId"`
 	TitleID      string    `jsonapi:"attr,titleId"`
+	MapName      string    `jsonapi:"attr,mapName"`
 	Rosters      []*Roster `jsonapi:"relation,rosters"`
-	// Todo stats, tags, assets, rounds, spectators
 }
 
 // ParseMatch parses a json response containing matches information
-func ParseMatch(in io.Reader) ([]*Match, error) {
-	result, err := jsonapi.UnmarshalManyPayload(in, reflect.TypeOf(new(Match)))
+func ParseMatch(in io.Reader) (*Match, error) {
+	match := new(Match)
+	err := jsonapi.UnmarshalPayload(in, match)
 	if err != nil {
+		panic(err.Error())
 		return nil, err
 	}
 
-	matches := make([]*Match, len(result))
-	for idx, elt := range result {
-		match, ok := elt.(*Match)
-		if !ok {
-			return nil, errors.New("Failed to convert matches")
-		}
-		matches[idx] = match
-	}
-	return matches, nil
+	return match, nil
 }

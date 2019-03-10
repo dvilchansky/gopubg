@@ -49,19 +49,17 @@ func (a *API) RequestSinglePlayerByName(shard, playerName string) ([]*player.Pla
 	if err != nil {
 		panic(err.Error())
 	}
-
 	return players, nil
 }
 
 //RequestMatch given a shard and a match_id string will print either match info, or a error
 func (a *API) RequestMatch(shard, matchID string) (*match.Match, error) {
-
 	endpointURL := fmt.Sprintf("https://api.pubg.com/shards/%s/matches/%s", shard, matchID)
 	buffer, err := httpRequest(endpointURL, a.Key)
 	if err != nil {
 		return nil, err
 	}
+	m, err := match.ParseMatch(buffer)
 
-	fmt.Printf("data:\n%s\n", buffer)
-	return nil, nil
+	return m, nil
 }
